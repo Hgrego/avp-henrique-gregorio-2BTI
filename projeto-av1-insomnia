@@ -1,0 +1,173 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1787610969466
+  modified: 1787610969466
+  description: ""
+collection:
+  - url: http://localhost:3000/filmes
+    name: listar filmes
+    meta:
+      id: req_45297f8d47ad41d6acab6c1d6cdc650c
+      created: 1789325028222
+      modified: 1789325446549
+      isPrivate: false
+      description: ""
+      sortKey: -1789325028223
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "http://localhost:3000/filmes/6 "
+    name: buscar filmes
+    meta:
+      id: req_aad782d54ff946768b511549076954f2
+      created: 1789325134023
+      modified: 1789325744816
+      isPrivate: false
+      description: ""
+      sortKey: -1789325134023
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/filmes
+    name: cadastrar filmes
+    meta:
+      id: req_34c6ccaa12234418915ca8dedf24e402
+      created: 1789325235169
+      modified: 1789325293217
+      isPrivate: false
+      description: ""
+      sortKey: -1789325235169
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "titulo": "Avatar",
+          "genero": "Ficção Científica"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/filmes/6
+    name: editar filme
+    meta:
+      id: req_fd674a765ae447ecb0909455078544cb
+      created: 1789325318627
+      modified: 1789325381620
+      isPrivate: false
+      description: ""
+      sortKey: -1789325318627
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "titulo": "Avatar: O Caminho da Água",
+          "genero": "Aventura"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/filmes/6
+    name: edição específica
+    meta:
+      id: req_1e8f421d1189423baf46882e3bf8a8a6
+      created: 1789325529252
+      modified: 1789325635673
+      isPrivate: false
+      description: ""
+      sortKey: -1789325529252
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "genero": "Ficção Científica"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3000/filmes/6
+    name: remover filme
+    meta:
+      id: req_eb5458115ead40c48fa547bf54492bc2
+      created: 1789325651324
+      modified: 1789325736527
+      isPrivate: false
+      description: ""
+      sortKey: -1789325651324
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "mensagem": "Filme excluído com sucesso!",
+          "filme": {
+            "id": 6,
+            "titulo": "Avatar: O Caminho da Água",
+            "genero": "Ficção Científica"
+          }
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1789320882991
+    modified: 1789320882991
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1789320882852
+    modified: 1789320882852
+    isPrivate: false
