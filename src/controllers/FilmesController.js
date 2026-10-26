@@ -1,26 +1,50 @@
 
-import filmes from "../data/filmes.js";
+import {
+    listarFilmes as listarFilmesModel,
+    buscarFilmePorId,
+    cadastrarFilme as cadastrarFilmeModel,
+    atualizarFilme as atualizarFilmeModel,
+    excluirFilme as excluirFilmeModel
+} from "../../models/filmesModel.js";
 
-export function listarFilmes(req, res) {
+function obterId(req, res) {
+    const id = Number(req.params.id);
+
+    if (!Number.isSafeInteger(id) || id <= 0) {
+        res.status(400).json({ mensagem: "ID inválido." });
+        return null;
+    }
+
+    return id;
+}
+
+function responderErroDeRegistroNaoEncontrado(error, res) {
+    if (error?.code !== "P2025") return false;
+
+    res.status(404).json({ mensagem: "Filme não encontrado!" });
+    return true;
+}
+
+export async function listarFilmes(req, res) {
+    const filmes = await listarFilmesModel();
     res.json(filmes);
 }
 
-export function buscarFilme(req, res) {
-    const filme = filmes.find(
-        (item) => item.id === Number(req.params.id)
-    );
+export async function buscarFilme(req, res) {
+    const id = obterId(req, res);
+    if (id === null) return;
+
+    const filme = await buscarFilmePorId(id);
 
     if (!filme) {
-        return res.status(404).json({
-            mensagem: "Filme não encontrado!"
-        });
+        return res.status(404).json({ mensagem: "Filme não encontrado!" });
     }
 
     res.json(filme);
 }
 
-export function cadastrarFilme(req, res) {
-    const { titulo, genero } = req.body;
+export async function cadastrarFilme(req, res) {
+    const { titulo, genero } = req.body ?? {};
 
     if (
         typeof titulo !== "string" ||
@@ -28,70 +52,52 @@ export function cadastrarFilme(req, res) {
         typeof genero !== "string" ||
         !genero.trim()
     ) {
-        return res.status(400).json({
-            mensagem: "Dados inválidos."
-        });
+        return res.status(400).json({ mensagem: "Dados inválidos." });
     }
 
-    const novoFilme = {
-        id: Math.max(0, ...filmes.map((filme) => filme.id)) + 1,
+    const filme = await cadastrarFilmeModel({
         titulo: titulo.trim(),
         genero: genero.trim()
-    };
-
-    filmes.push(novoFilme);
+    });
 
     res.status(201).json({
         mensagem: "Filme cadastrado com sucesso!",
-        filme: novoFilme
-    });
-}
-
-export function atualizarFilme(req, res) {
-    const filme = filmes.find(
-        (item) => item.id === Number(req.params.id)
-    );
-
-    if (!filme) {
-        return res.status(404).json({
-            mensagem: "Filme não encontrado!"
-        });
-    }
-
-    const { titulo, genero } = req.body;
-
-    if (
-        typeof titulo !== "string" ||
-        !titulo.trim() ||
-        typeof genero !== "string" ||
-        !genero.trim()
-    ) {
-        return res.status(400).json({
-            mensagem: "Dados inválidos."
-        });
-    }
-
-    filme.titulo = titulo.trim();
-    filme.genero = genero.trim();
-
-    res.json({
-        mensagem: "Filme atualizado com sucesso!",
         filme
     });
 }
 
-export function atualizarFilmeParcial(req, res) {
-    const filme = filmes.find(
-        (item) => item.id === Number(req.params.id)
-    );
+export async function atualizarFilme(req, res) {
+    const id = obterId(req, res);
+    if (id === null) return;
 
-    if (!filme) {
-        return res.status(404).json({
-            mensagem: "Filme não encontrado!"
-        });
+    const { titulo, genero } = req.body ?? {};
+
+    if (
+        typeof titulo !== "string" ||
+        !titulo.trim() ||
+        typeof genero !== "string" ||
+        !genero.trim()
+    ) {
+        return res.status(400).json({ mensagem: "Dados inválidos." });
     }
 
-    const { titulo, genero } = req.body;
+    try {
+        const filme = await atualizarFilmeModel(id, {
+            titulo: titulo.trim(),
+            genero: genero.trim()
+        });
+
+        res.json({ mensagem: "Filme atualizado com sucesso!", filme });
+    } catch (error) {
+        if (!responderErroDeRegistroNaoEncontrado(error, res)) throw error;
+    }
+}
+
+export async function atualizarFilmeParcial(req, res) {
+    const id = obterId(req, res);
+    if (id === null) return;
+
+    const { titulo, genero } = req.body ?? {};
 
     if (titulo === undefined && genero === undefined) {
         return res.status(400).json({
@@ -105,35 +111,29 @@ export function atualizarFilmeParcial(req, res) {
         (genero !== undefined &&
             (typeof genero !== "string" || !genero.trim()))
     ) {
-        return res.status(400).json({
-            mensagem: "Dados inválidos."
-        });
+        return res.status(400).json({ mensagem: "Dados inválidos." });
     }
 
-    if (titulo !== undefined) filme.titulo = titulo.trim();
-    if (genero !== undefined) filme.genero = genero.trim();
+    const dados = {};
+    if (titulo !== undefined) dados.titulo = titulo.trim();
+    if (genero !== undefined) dados.genero = genero.trim();
 
-    res.json({
-        mensagem: "Filme atualizado parcialmente!",
-        filme
-    });
+    try {
+        const filme = await atualizarFilmeModel(id, dados);
+        res.json({ mensagem: "Filme atualizado parcialmente!", filme });
+    } catch (error) {
+        if (!responderErroDeRegistroNaoEncontrado(error, res)) throw error;
+    }
 }
 
-export function excluirFilme(req, res) {
-    const indice = filmes.findIndex(
-        (item) => item.id === Number(req.params.id)
-    );
+export async function excluirFilme(req, res) {
+    const id = obterId(req, res);
+    if (id === null) return;
 
-    if (indice === -1) {
-        return res.status(404).json({
-            mensagem: "Filme não encontrado!"
-        });
+    try {
+        const filme = await excluirFilmeModel(id);
+        res.json({ mensagem: "Filme excluído com sucesso!", filme });
+    } catch (error) {
+        if (!responderErroDeRegistroNaoEncontrado(error, res)) throw error;
     }
-
-    const filme = filmes.splice(indice, 1)[0];
-
-    res.json({
-        mensagem: "Filme excluído com sucesso!",
-        filme
-    });
 }
