@@ -1,29 +1,24 @@
 import prisma from '../config/prisma.js';
 
-export function cadastrarUsuario({nome, email, senhaHash}){
-
-}
-
-export function buscarPorEmail({email}){
+export function cadastrarUsuario({ nome, email, senhaHash }) {
     return prisma.usuario.create({
         data: {
             nome,
-            emal,
+            email,
             senhaHash
         },
         select: {
             id: true,
             nome: true,
-            email: true,
-            senhaHash: true
+            email: true
         }
     });
 }
 
-    export function buscarPorEmail({email}){
-        return prisma.usuario.findUnique({
-            where: { 
-                email 
-            }
-        });
-    }
+export function buscarPorEmail(email) {
+    return prisma.usuario.findUnique({
+        where: {
+            email
+        }
+    });
+}

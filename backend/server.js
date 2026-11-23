@@ -1,4 +1,5 @@
-
+import cors from "cors";
+import usuariosRoutes from "./src/routes/UsuariosRoutes.js";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 
@@ -9,6 +10,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.json({
@@ -18,7 +20,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/filmes", filmesRoutes);
-
+app.use("/usuarios", usuariosRoutes);
 app.use(
   "/api-docs",
   swaggerUi.serve,
