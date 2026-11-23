@@ -1,4 +1,6 @@
 
+import jwt from 'jsonwebtoken'
+
 const TOKEN_SECRETO = "12345678Hg";
 
 export function verificarToken(req, res, next) {
@@ -15,11 +17,16 @@ export function verificarToken(req, res, next) {
         });
     }
 
-    if (partes[1] !== TOKEN_SECRETO) {
-        return res.status(403).json({
-            mensagem: "Acesso negado! Token inválido."
+    try {
+        const dados = jwt.verify(partes[1], TOKEN_SECRETO);
+
+        req.usuario = dados;
+
+        next();
+
+    } catch (erro) {
+        return res.status(401).json({
+            mensagem: "Acesso negado! Token inválido ou expirado."
         });
     }
-
-    next();
 }
